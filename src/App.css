@@ -1,0 +1,33 @@
+ul li {
+  list-style-type: disc;
+}
+.app-wrapper {
+  /* margin: 0 auto; */
+  display: grid;
+  width: 1000px;
+  grid-template-areas:
+    "h h"
+    "n m";
+  grid-template-rows: 60px 1fr;
+  grid-template-columns: 2fr 10fr;
+  /* grid-gap: 10px; */
+}
+
+.header {
+  grid-area: h;
+  background-color: lawngreen;
+}
+
+.header img {
+  width: 100px;
+}
+
+.nav {
+  grid-area: n;
+  background-color: green;
+}
+
+.main {
+  grid-area: m;
+  background-color: blue;
+}
