@@ -12,22 +12,3 @@ ul li {
   grid-template-columns: 2fr 10fr;
   /* grid-gap: 10px; */
 }
-
-.header {
-  grid-area: h;
-  background-color: lawngreen;
-}
-
-.header img {
-  width: 100px;
-}
-
-.nav {
-  grid-area: n;
-  background-color: green;
-}
-
-.main {
-  grid-area: m;
-  background-color: blue;
-}

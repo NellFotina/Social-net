@@ -1,0 +1,9 @@
+.main {
+    grid-area: m;
+    background-color: blue;
+  }
+
+  .item {
+    color: yellow;
+  }
+  
