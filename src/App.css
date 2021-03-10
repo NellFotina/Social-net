@@ -12,3 +12,8 @@ ul li {
   grid-template-columns: 2fr 10fr;
   /* grid-gap: 10px; */
 }
+
+.app-wrapper-main {
+  grid-area: m;
+  background-color: blue;
+}
