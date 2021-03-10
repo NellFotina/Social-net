@@ -9,9 +9,10 @@ import News from "./components/News/News";
 import Music from "./components/Music/Music";
 import Settings from "./components/Settings/Settings";
 
-let SomeComponent = () => <Profile />
-
 const App = (props) => {
+  // Можно и так попробовать, как вариант (потом сотрем)
+  let SomeComponent = () => <Profile posts={props.posts} />;
+
   return (
     <BrowserRouter>
       <div className="app-wrapper">
@@ -25,7 +26,12 @@ const App = (props) => {
           <Route path='/settings' component={Settings}/> */}
 
           <Route path="/profile" render={SomeComponent} />
-          <Route path="/dialogs" render={() => <Dialogs />} />
+          <Route
+            path="/dialogs"
+            render={() => (
+              <Dialogs messages={props.messages} dialogs={props.dialogs} />
+            )}
+          />
           <Route path="/news" render={() => <News />} />
           <Route path="/music" render={() => <Music />} />
           <Route path="/settings" render={() => <Settings />} />
