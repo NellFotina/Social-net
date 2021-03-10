@@ -10,27 +10,37 @@ import Music from "./components/Music/Music";
 import Settings from "./components/Settings/Settings";
 
 const App = (props) => {
-  // Можно и так попробовать, как вариант (потом сотрем)
-  let SomeComponent = () => <Profile posts={props.posts} />;
-
   return (
     <BrowserRouter>
       <div className="app-wrapper">
         <Header />
         <Navbar />
         <div className="app-wrapper-main">
-          {/* <Route path='/profile' component={Profile}/>
-          <Route path='/dialogs' component={Dialogs}/>
-          <Route path='/news' component={News}/>
-          <Route path='/music' component={Music}/>
-          <Route path='/settings' component={Settings}/> */}
+          
+          {/* можно так, но это не лучший вариант */}
 
-          <Route path="/profile" render={SomeComponent} />
+          {/* <Route
+            path="/profile"
+            render={() => <Profile posts={props.state.profilePage.posts} />}
+          />
           <Route
             path="/dialogs"
             render={() => (
-              <Dialogs messages={props.messages} dialogs={props.dialogs} />
+              <Dialogs
+                messages={props.state.dialogsPage.messages}
+                dialogs={props.state.dialogsPage.dialogs}
+              />
             )}
+          /> */}
+
+          {/* лучше так: */}
+          <Route
+            path="/profile"
+            render={() => <Profile state={props.state.profilePage} />}
+          />
+          <Route
+            path="/dialogs"
+            render={() => <Dialogs state={props.state.dialogsPage} />}
           />
           <Route path="/news" render={() => <News />} />
           <Route path="/music" render={() => <Music />} />
