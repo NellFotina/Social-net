@@ -1,0 +1,19 @@
+.friendsItems {
+  display: grid;
+  grid-template-rows: 40px 1fr;
+  grid-template-columns: 2fr 2fr 2fr;
+  text-decoration: none;
+}
+
+.friendsItems .active {
+  color: gold;
+}
+
+.friends a {
+  color: white;
+}
+
+.ava img {
+  width: 40px;
+  border-radius: 30px;
+}
