@@ -9,20 +9,21 @@ import Settings from "./components/Settings/Settings";
 import Friends from "./components/Friends/Friends";
 import { Route } from "react-router";
 import DialogsContainer from "./components/Dialogs/DialogsContainer";
+import store from "./redux/redux-store";
 
-const App = (props) => {
+const App = () => {
   return (
     <div className="app-wrapper">
       <Header />
-      <Navbar state={props.state.sidebar} />
+      <Navbar state={store.getState().sidebar} />
       <div className="app-wrapper-main">
         <Route
           path="/profile"
-          render={() => <Profile store={props.store} />}
+          render={() => <Profile />}
         />
         <Route
           path="/dialogs"
-          render={() => <DialogsContainer store={props.store} />}
+          render={() => <DialogsContainer />}
         />
         <Route path="/news" render={() => <News />} />
         <Route path="/music" render={() => <Music />} />
@@ -30,7 +31,7 @@ const App = (props) => {
         <Route
           exact
           path="/friends"
-          render={() => <Friends state={props.state.sidebar} />}
+          render={() => <Friends state={store.getState().sidebar} />}
         />
       </div>
     </div>
