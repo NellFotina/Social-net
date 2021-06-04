@@ -10,7 +10,7 @@ let initialState = {
   //далее начинаем расширять наш стейт, чтобы от этого менялся наш UI
   pageSize: 5, //количество записей на 1 странице
   totalUsersCount: 0, //общее количество записей
-  currentPage: 5, //текущая страница
+  currentPage: 1, //текущая страница
 };
 
 const usersReducer = (state = initialState, action) => {

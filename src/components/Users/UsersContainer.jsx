@@ -1,4 +1,5 @@
 import React from "react";
+import * as axios from "axios";
 import { connect } from "react-redux";
 import {
   followAC,
@@ -8,6 +9,48 @@ import {
   setTotalUsersCountAC,
 } from "../../redux/users-reducer";
 import Users from "./Users";
+
+class UsersComponent extends React.Component {
+  componentDidMount() {
+    axios
+      //делаем get-запрос, запрашиваем текущую страницу (page-название из документации)
+      //и количество записей на 1 странице (count-название из документации)
+      .get(
+        `https://social-network.samuraijs.com/api/1.0/users?page=${this.props.currentPage}&count${this.props.pageSize}`
+      )
+      .then((response) => {
+        this.props.setUsers(response.data.items); //засетаем данные в наш store (users-reducer.js)
+        this.props.setTotalUsersCount(response.data.totalCount); //засетаем общее кол-во пользователей с сервера (в девтулзе смотрим на вкладке Network по первому запросу), далее прописываем его в UsersContainer
+      });
+  }
+  //все колбеки приходят сюда из mapDispatchToProps
+  onPageChanged = (pageNumber) => {
+    this.props.setCurrentPage(pageNumber);
+    axios
+      //делаем get-запрос, запрашиваем текущую страницу (page-название из документации)
+      //и количество записей на 1 странице (count-название из документации)
+      .get(
+        `https://social-network.samuraijs.com/api/1.0/users?page=${pageNumber}&count${this.props.pageSize}`
+      )
+      .then((response) => {
+        this.props.setUsers(response.data.items); //засетаем данные в наш store (users-reducer.js)
+      });
+  };
+
+  render() {
+    return (
+      <Users
+        totalUsersCount={this.props.totalUsersCount}
+        pageSize={this.props.pageSize}
+        currentPage={this.props.currentPage}
+        onPageChanged={this.onPageChanged}
+        users={this.props.users}
+        unfollow={this.props.unfollow}
+        follow={this.props.follow}
+      />
+    );
+  }
+}
 
 let mapStateToProps = (state) => {
   return {
@@ -45,4 +88,4 @@ let mapDispatchToProps = (dispatch) => {
 };
 
 //после того как стейт изменился, connect заново вызывает mapStateToProps, чтобы достать новые свежие пропсы из стора
-export default connect(mapStateToProps, mapDispatchToProps)(Users);
+export default connect(mapStateToProps, mapDispatchToProps)(UsersComponent);
