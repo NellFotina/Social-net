@@ -3,6 +3,7 @@ const UNFOLLOW = "UNFOLLOW";
 const SET_USERS = "SET_USERS";
 const SET_CURRENT_PAGE = "SET_CURRENT_PAGE";
 const SET_TOTAL_USERS_COUNT = "SET_TOTAL_USERS_COUNT";
+const TOGGLE_IS_FETCHING = "TOGGLE_IS_FETCHING";
 
 let initialState = {
   //сначала переменные пишем здесь, потом прокидываем их в UsersContainer через mapStateToProps
@@ -11,6 +12,7 @@ let initialState = {
   pageSize: 5, //количество записей на 1 странице
   totalUsersCount: 0, //общее количество записей
   currentPage: 1, //текущая страница
+  isFetching: false,
 };
 
 const usersReducer = (state = initialState, action) => {
@@ -47,12 +49,17 @@ const usersReducer = (state = initialState, action) => {
     case SET_TOTAL_USERS_COUNT: {
       return { ...state, totalUsersCount: action.count }; //берем у action свойство totalUsersCount, именно поэтому оно в export.
     }
+    case TOGGLE_IS_FETCHING: {
+      return { ...state, isFetching: action.isFetching };
+    }
 
     default:
       return state;
   }
 };
 
+//используем АС для того, чтобы не париться (в компоненте), что мы должны сформировать, где и как
+//формируем данные в объекте
 export const followAC = (userId) => ({ type: FOLLOW, userId });
 
 export const unfollowAC = (userId) => ({ type: UNFOLLOW, userId });
@@ -67,6 +74,11 @@ export const setCurrentPageAC = (currentPage) => ({
 export const setTotalUsersCountAC = (totalUsersCount) => ({
   type: SET_TOTAL_USERS_COUNT,
   count: totalUsersCount,
+});
+
+export const toggleIsFetchingAC = (isFetching) => ({
+  type: TOGGLE_IS_FETCHING,
+  isFetching,
 });
 
 export default usersReducer;
