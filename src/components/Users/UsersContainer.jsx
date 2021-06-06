@@ -2,12 +2,12 @@ import React from "react";
 import * as axios from "axios";
 import { connect } from "react-redux";
 import {
-  followAC,
-  setUsersAC,
-  unfollowAC,
-  setCurrentPageAC,
-  setTotalUsersCountAC,
-  toggleIsFetchingAC,
+  follow,
+  setUsers,
+  unfollow,
+  setCurrentPage,
+  setTotalUsersCount,
+  toggleIsFetching,
 } from "../../redux/users-reducer";
 import Users from "./Users";
 import Preloader from "../common/Preloader/Preloader";
@@ -75,30 +75,46 @@ let mapStateToProps = (state) => {
 
 //пользователь где-то кликнул - нам нужно задиспатчить action (объект, у кот. как min есть св-во type)
 //здесь храняться все колбэки, которые диспатчат что-то в state рождаются здесь
-let mapDispatchToProps = (dispatch) => {
-  return {
-    follow: (userId) => {
-      dispatch(followAC(userId));
-    },
-    unfollow: (userId) => {
-      dispatch(unfollowAC(userId));
-    },
-    setUsers: (users) => {
-      dispatch(setUsersAC(users)); //диспатчим пользователей, они уходят в state, state меняется, срабатывает перерисовка
-    },
-    setCurrentPage: (pageNumber) => {
-      dispatch(setCurrentPageAC(pageNumber)); //мы диспатчим не action creater, мы диспатчим вызов АС
-      //а то, что нам возвращает вызов АС (он всегда возвращает объект,
-      //который мы формируем внутри АС)
-    },
-    setTotalUsersCount: (totalCount) => {
-      dispatch(setTotalUsersCountAC(totalCount)); //
-    },
-    toggleIsFetching: (isFetching) => {
-      dispatch(toggleIsFetchingAC(isFetching)); //отображение крутилки при загрузке
-    },
-  };
-};
+// let mapDispatchToProps = (dispatch) => {
+//   return {
+//     follow: (userId) => {
+//       dispatch(followAC(userId));
+//     },
+//     unfollow: (userId) => {
+//       dispatch(unfollowAC(userId));
+//     },
+//     setUsers: (users) => {
+//       dispatch(setUsersAC(users)); //диспатчим пользователей, они уходят в state, state меняется, срабатывает перерисовка
+//     },
+//     setCurrentPage: (pageNumber) => {
+//       dispatch(setCurrentPageAC(pageNumber)); //мы диспатчим не action creater, мы диспатчим вызов АС
+//       //а то, что нам возвращает вызов АС (он всегда возвращает объект,
+//       //который мы формируем внутри АС)
+//     },
+//     setTotalUsersCount: (totalCount) => {
+//       dispatch(setTotalUsersCountAC(totalCount)); //
+//     },
+//     toggleIsFetching: (isFetching) => {
+//       dispatch(toggleIsFetchingAC(isFetching)); //отображение крутилки при загрузке
+//     },
+//   };
+// };
 
 //после того как стейт изменился, connect заново вызывает mapStateToProps, чтобы достать новые свежие пропсы из стора
-export default connect(mapStateToProps, mapDispatchToProps)(UsersComponent);
+// export default connect(mapStateToProps, {
+//   follow: followAC,
+//   unfollow: unfollowAC,
+//   setUsers: setUsersAC,
+//   setCurrentPage: setCurrentPageAC,
+//   setTotalUsersCount: setTotalUsersCountAC,
+//   toggleIsFetching: toggleIsFetchingAC,
+// })(UsersComponent);
+
+export default connect(mapStateToProps, {
+  follow,
+  unfollow,
+  setUsers,
+  setCurrentPage,
+  setTotalUsersCount,
+  toggleIsFetching,
+})(UsersComponent);
