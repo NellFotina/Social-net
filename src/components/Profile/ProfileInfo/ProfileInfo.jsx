@@ -3,7 +3,7 @@ import Preloader from "../../common/Preloader/Preloader";
 import s from "./ProfileInfo.module.css";
 
 const ProfileInfo = (props) => {
-  //!props.profile - это все равно, что props.profile == nul || props.profile (тип его) undefined
+  //!props.profile - это все равно, что props.profile == null || props.profile (тип его) underfined
   if (!props.profile) {
     return <Preloader />;
   }
@@ -14,7 +14,6 @@ const ProfileInfo = (props) => {
       </div>
       <div className={s.descriptionBlock}>
         <img src={props.profile.photos.large} />
-        ava + description
       </div>
     </div>
   );
