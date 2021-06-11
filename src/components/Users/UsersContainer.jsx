@@ -1,5 +1,4 @@
 import React from "react";
-import * as axios from "axios";
 import { connect } from "react-redux";
 import {
   follow,
@@ -11,42 +10,27 @@ import {
 } from "../../redux/users-reducer";
 import Users from "./Users";
 import Preloader from "../common/Preloader/Preloader";
+import { usersAPI } from "../../api/api";
 
 class UsersComponent extends React.Component {
   componentDidMount() {
     this.props.toggleIsFetching(true);
-    axios
-      //делаем get-запрос, запрашиваем текущую страницу (page-название из документации)
-      //и количество записей на 1 странице (count-название из документации)
-      .get(
-        `https://social-network.samuraijs.com/api/1.0/users?page=${this.props.currentPage}&count${this.props.pageSize}`,
-        {
-          withCredentials: true,
-        }
-      )
-      .then((response) => {
+    usersAPI
+      .getUsers(this.props.currentPage, this.props.pageSize)
+      .then((data) => {
         this.props.toggleIsFetching(false);
-        this.props.setUsers(response.data.items); //засетаем данные в наш store (users-reducer.js)
-        this.props.setTotalUsersCount(response.data.totalCount); //засетаем общее кол-во пользователей с сервера (в девтулзе смотрим на вкладке Network по первому запросу), далее прописываем его в UsersContainer
+        this.props.setUsers(data.items); //засетаем данные в наш store (users-reducer.js)
+        this.props.setTotalUsersCount(data.totalCount); //засетаем общее кол-во пользователей с сервера (в девтулзе смотрим на вкладке Network по первому запросу), далее прописываем его в UsersContainer
       });
   }
   //все колбеки приходят сюда из mapDispatchToProps
   onPageChanged = (pageNumber) => {
     this.props.toggleIsFetching(true);
     this.props.setCurrentPage(pageNumber);
-    axios
-      //делаем get-запрос, запрашиваем текущую страницу (page-название из документации)
-      //и количество записей на 1 странице (count-название из документации)
-      .get(
-        `https://social-network.samuraijs.com/api/1.0/users?page=${pageNumber}&count${this.props.pageSize}`,
-        {
-          withCredentials: true,
-        }
-      )
-      .then((response) => {
-        this.props.toggleIsFetching(false);
-        this.props.setUsers(response.data.items); //засетаем данные в наш store (users-reducer.js)
-      });
+    usersAPI.getUsers(pageNumber, this.props.pageSize).then((data) => {
+      this.props.toggleIsFetching(false);
+      this.props.setUsers(data.items); //засетаем данные в наш store (users-reducer.js)
+    });
   };
 
   render() {

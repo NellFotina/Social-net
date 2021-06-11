@@ -7,7 +7,12 @@ const FriendsItem = (props) => {
 
   return (
     <div>
-      <div className={s.ava}><img src="https://klike.net/uploads/posts/2019-03/1551511835_22.jpg"></img></div>
+      <div className={s.ava}>
+        <img
+          src="https://klike.net/uploads/posts/2019-03/1551511835_22.jpg"
+          alt=""
+        />
+      </div>
       <div className={s.friends + " " + s.active}>
         <NavLink to={path}>{props.name} </NavLink>
       </div>

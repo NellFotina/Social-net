@@ -2,7 +2,7 @@ import React from "react";
 import styles from "./Users.module.css";
 import userPhoto from "../../assets/image/user_photo.png";
 import { NavLink } from "react-router-dom";
-import * as axios from "axios";
+import { followApi, unfollowApi } from "../../api/api";
 
 let Users = (props) => {
   let pagesCount = Math.ceil(props.totalUsersCount / props.pageSize); //вычисляем количество страниц
@@ -36,6 +36,7 @@ let Users = (props) => {
                 <img
                   src={u.photos.small != null ? u.photos.small : userPhoto}
                   className={styles.UserPhoto}
+                  alt=""
                 />
               </NavLink>
             </div>
@@ -43,21 +44,11 @@ let Users = (props) => {
               {u.followed ? (
                 <button
                   onClick={() => {
-                    axios
-                      .delete(
-                        `https://social-network.samuraijs.com/api/1.0//follow/${u.id}`,
-                        {
-                          withCredentials: true,
-                          headers: {
-                            "API-KEY": "73c522ff-bfdb-4f88-bb6e-58eae3d6e793",
-                          },
-                        }
-                      )
-                      .then((response) => {
-                        if (response.data.resultCode === 0) {
-                          props.unfollow(u.id);
-                        }
-                      });
+                    unfollowApi.unfollowUser(u.id).then((data) => {
+                      if (data.resultCode === 0) {
+                        props.unfollow(u.id);
+                      }
+                    });
                   }}
                 >
                   Unfollow
@@ -65,30 +56,12 @@ let Users = (props) => {
               ) : (
                 <button
                   onClick={() => {
-                    // Мы с вами реализовали полписку и отписку. Но... Не до конца! Вся логика наша свелась к просто изменению стейта redux при нажатии на кнопки. А нам ведь нужно на сервер запрос отправить.
-
-                    // Сценарий такой:
-                    // 1. кликаем на кнопку подписаться
-                    // 2. шлём запрос на сервак
-                    // 3. сервак говорит: всё ок, подписались
-                    // 4. после этого только диспатчим экшен в стор
-                    // Летим!!!
-                    axios
-                      .post(
-                        `https://social-network.samuraijs.com/api/1.0//follow/${u.id}`,
-                        [],
-                        {
-                          withCredentials: true,
-                          headers: {
-                            "API-KEY": "73c522ff-bfdb-4f88-bb6e-58eae3d6e793",
-                          },
-                        }
-                      )
-                      .then((response) => {
-                        if (response.data.resultCode === 0) {
-                          props.follow(u.id);
-                        }
-                      });
+                    followApi.followUser(u.id).then((data) => {
+                      if (data.resultCode === 0) {
+                        //сервер подтвердил, что подписка произошла
+                        props.follow(u.id); //вызываем колбэк (задиспатчим в редьюсер)
+                      }
+                    });
                   }}
                 >
                   Follow
