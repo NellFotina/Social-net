@@ -6,10 +6,10 @@ import { NavLink } from "react-router-dom";
 let Users = (props) => {
   let pagesCount = Math.ceil(props.totalUsersCount / props.pageSize); //вычисляем количество страниц
   let pages = []; // массив сначала пустой (количество страниц)
+
   for (let i = 1; i <= pagesCount; i++) {
     pages.push(i); //заполняем массив количеством страниц
   }
-
   return (
     <div>
       <div>

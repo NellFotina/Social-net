@@ -101,6 +101,7 @@ export const toggleFollowingProgress = (isFetching, userId) => ({
 //подготовим ThunkCreator, кот. мы можем задиспатчить извне сюда
 export const getUsers = (currentPage, pageSize) => (dispatch) => {
   dispatch(toggleIsFetching(true));
+  dispatch(setCurrentPage(currentPage));
   usersAPI.getUsers(currentPage, pageSize).then((data) => {
     dispatch(toggleIsFetching(false));
     dispatch(setUsers(data.items)); //засетаем данные в наш store (users-reducer.js)

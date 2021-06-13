@@ -16,30 +16,24 @@ export const usersAPI = {
         return response.data;
       });
   },
+  getUserProfile(id) {
+    return instance.get(`profile/${id}`).then((response) => {
+      return response.data;
+    });
+  },
+
   followUser(id) {
+    //2-м параметром в Post передается пустой массив
     return instance.post(`follow/${id}`, []).then((response) => {
       return response.data;
     });
   },
   unfollowUser(id) {
-    return instance.delete(`follow/${id}`, []).then((response) => {
+    return instance.delete(`follow/${id}`).then((response) => {
       return response.data;
     });
   },
 };
-
-// export const followApi = {
-//   followUser(id) {
-//     return instance.post(`follow/${id}`, []).then((response) => {
-//       return response.data;
-//     });
-//   },
-//   unfollowUser(id) {
-//     return instance.delete(`follow/${id}`, []).then((response) => {
-//       return response.data;
-//     });
-//   },
-// };
 
 export const authAPI = {
   authMe() {

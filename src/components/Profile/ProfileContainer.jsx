@@ -1,24 +1,17 @@
 import React from "react";
 import Profile from "./Profile";
-import * as axios from "axios";
 import { connect } from "react-redux";
-import { setUserProfile } from "../../redux/profile-reducer";
+import { userProfile } from "../../redux/profile-reducer";
 import { withRouter } from "react-router";
 
 class ProfileContainer extends React.Component {
   componentDidMount() {
+    //match.params. - значения из консоли, связанные с ф-цией withRouter - вытаскивает данные из url
     let userId = this.props.match.params.userId;
     if (!userId) {
-      userId = 2;
+      userId = 2; //если не выбран профиль - аватарка 2-го пользователя
     }
-    axios
-      //делаем get-запрос, запрашиваем текущую страницу (page-название из документации)
-      //и количество записей на 1 странице (count-название из документации);
-      //получим объект и засетаем его в редьюсер
-      .get(`https://social-network.samuraijs.com/api/1.0/profile/` + userId)
-      .then((response) => {
-        this.props.setUserProfile(response.data); //вызовем здесь АС и передадим в него profile
-      });
+    this.props.userProfile(userId);
   }
   render() {
     //прокинем в компоненту props, раскукожим их (...) и прокинем дальше
@@ -42,6 +35,6 @@ let WithUrlDataContainerComponent = withRouter(ProfileContainer);
 //наша ProfileContainer вместо mapDispatchToProps создает объект,
 //в который кладет AC, далее connect сам этот АС вызовет, задиспатчит,
 //в него передаст profile и т.д.
-export default connect(mapStateToProps, { setUserProfile })(
+export default connect(mapStateToProps, { userProfile })(
   WithUrlDataContainerComponent
 );

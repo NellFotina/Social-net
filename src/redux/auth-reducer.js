@@ -1,3 +1,5 @@
+import { authAPI } from "../api/api";
+
 const SET_USER_DATA = "SET_USER_DATA";
 
 let initialState = {
@@ -12,7 +14,7 @@ const authReducer = (state = initialState, action) => {
   // reducer принимает старый state и action, анализирует action и что-то изменяет
   switch (action.type) {
     case SET_USER_DATA:
-      //debugger; максимально крайняя точка для проверки
+      // debugger; //максимально крайняя точка для проверки
       return {
         ...state,
         ...action.data, //в action - один объект (data), и мы его деструктуризируем (положим в него userId, email, login)
@@ -31,5 +33,15 @@ export const setAuthUserData = (userId, email, login) => ({
   type: SET_USER_DATA,
   data: { userId, email, login },
 });
+
+//подготовим ThunkCreator, кот. мы можем задиспатчить извне сюда
+export const authMeThunk = () => (dispatch) => {
+  authAPI.authMe().then((data) => {
+    if (data.resultCode === 0) {
+      let { id, login, email } = data.data;
+      dispatch(setAuthUserData(id, login, email));
+    }
+  });
+};
 
 export default authReducer;
