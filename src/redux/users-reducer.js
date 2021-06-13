@@ -1,3 +1,5 @@
+import { usersAPI } from "../api/api";
+
 const FOLLOW = "FOLLOW";
 const UNFOLLOW = "UNFOLLOW";
 const SET_USERS = "SET_USERS";
@@ -59,7 +61,7 @@ const usersReducer = (state = initialState, action) => {
         ...state,
         followingInProgress: action.isFetching
           ? [...state.followingInProgress, action.userId]
-          : state.followingInProgress.filter((id) => id != action.userId),
+          : state.followingInProgress.filter((id) => id !== action.userId),
       };
     }
 
@@ -70,9 +72,9 @@ const usersReducer = (state = initialState, action) => {
 
 //используем АС для того, чтобы не париться (в компоненте), что мы должны сформировать, где и как
 //формируем данные в объекте
-export const follow = (userId) => ({ type: FOLLOW, userId });
+export const followSuccess = (userId) => ({ type: FOLLOW, userId });
 
-export const unfollow = (userId) => ({ type: UNFOLLOW, userId });
+export const unfollowSuccess = (userId) => ({ type: UNFOLLOW, userId });
 
 export const setUsers = (users) => ({ type: SET_USERS, users });
 
@@ -96,5 +98,36 @@ export const toggleFollowingProgress = (isFetching, userId) => ({
   isFetching,
   userId,
 });
+//подготовим ThunkCreator, кот. мы можем задиспатчить извне сюда
+export const getUsers = (currentPage, pageSize) => (dispatch) => {
+  dispatch(toggleIsFetching(true));
+  usersAPI.getUsers(currentPage, pageSize).then((data) => {
+    dispatch(toggleIsFetching(false));
+    dispatch(setUsers(data.items)); //засетаем данные в наш store (users-reducer.js)
+    dispatch(setTotalUsersCount(data.totalCount)); //засетаем общее кол-во пользователей с сервера (в девтулзе смотрим на вкладке Network по первому запросу), далее прописываем его в UsersContainer
+  });
+};
 
+//подготовим ThunkCreator, кот. мы можем задиспатчить извне сюда
+export const follow = (userId) => (dispatch) => {
+  dispatch(toggleFollowingProgress(true, userId));
+  usersAPI.followUser(userId).then((data) => {
+    if (data.resultCode === 0) {
+      //сервер подтвердил, что подписка произошла
+      dispatch(followSuccess(userId)); //вызываем колбэк (задиспатчим в редьюсер)
+    }
+    dispatch(toggleFollowingProgress(false, userId));
+  });
+};
+
+//подготовим ThunkCreator, кот. мы можем задиспатчить извне сюда
+export const unfollow = (userId) => (dispatch) => {
+  dispatch(toggleFollowingProgress(true, userId));
+  usersAPI.unfollowUser(userId).then((data) => {
+    if (data.resultCode === 0) {
+      dispatch(unfollowSuccess(userId));
+    }
+    dispatch(toggleFollowingProgress(false, userId));
+  });
+};
 export default usersReducer;

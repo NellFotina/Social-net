@@ -16,9 +16,6 @@ export const usersAPI = {
         return response.data;
       });
   },
-};
-
-export const followApi = {
   followUser(id) {
     return instance.post(`follow/${id}`, []).then((response) => {
       return response.data;
@@ -31,7 +28,12 @@ export const followApi = {
   },
 };
 
-// export const unfollowApi = {
+// export const followApi = {
+//   followUser(id) {
+//     return instance.post(`follow/${id}`, []).then((response) => {
+//       return response.data;
+//     });
+//   },
 //   unfollowUser(id) {
 //     return instance.delete(`follow/${id}`, []).then((response) => {
 //       return response.data;
