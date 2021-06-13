@@ -10,8 +10,6 @@ const instance = axios.create({
 
 export const usersAPI = {
   getUsers(currentPage = 1, pageSize = 10) {
-    //делаем get-запрос, запрашиваем текущую страницу (page-название из документации)
-    //и количество записей на 1 странице (count-название из документации)
     return instance
       .get(`users?page=${currentPage}&count${pageSize}`)
       .then((response) => {
@@ -26,15 +24,20 @@ export const followApi = {
       return response.data;
     });
   },
-};
-
-export const unfollowApi = {
   unfollowUser(id) {
     return instance.delete(`follow/${id}`, []).then((response) => {
       return response.data;
     });
   },
 };
+
+// export const unfollowApi = {
+//   unfollowUser(id) {
+//     return instance.delete(`follow/${id}`, []).then((response) => {
+//       return response.data;
+//     });
+//   },
+// };
 
 export const authAPI = {
   authMe() {

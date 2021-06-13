@@ -2,7 +2,7 @@ import React from "react";
 import styles from "./Users.module.css";
 import userPhoto from "../../assets/image/user_photo.png";
 import { NavLink } from "react-router-dom";
-import { followApi, unfollowApi } from "../../api/api";
+import { followApi } from "../../api/api";
 
 let Users = (props) => {
   let pagesCount = Math.ceil(props.totalUsersCount / props.pageSize); //вычисляем количество страниц
@@ -43,11 +43,14 @@ let Users = (props) => {
             <div>
               {u.followed ? (
                 <button
+                  disabled={props.followingInProgress.some((id) => id === u.id)}
                   onClick={() => {
-                    unfollowApi.unfollowUser(u.id).then((data) => {
+                    props.toggleFollowingProgress(true, u.id);
+                    followApi.unfollowUser(u.id).then((data) => {
                       if (data.resultCode === 0) {
                         props.unfollow(u.id);
                       }
+                      props.toggleFollowingProgress(false, u.id);
                     });
                   }}
                 >
@@ -55,12 +58,15 @@ let Users = (props) => {
                 </button>
               ) : (
                 <button
+                  disabled={props.followingInProgress.some((id) => id === u.id)}
                   onClick={() => {
+                    props.toggleFollowingProgress(true, u.id);
                     followApi.followUser(u.id).then((data) => {
                       if (data.resultCode === 0) {
                         //сервер подтвердил, что подписка произошла
                         props.follow(u.id); //вызываем колбэк (задиспатчим в редьюсер)
                       }
+                      props.toggleFollowingProgress(false, u.id);
                     });
                   }}
                 >
