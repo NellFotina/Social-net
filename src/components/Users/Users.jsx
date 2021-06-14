@@ -45,13 +45,6 @@ let Users = (props) => {
                   disabled={props.followingInProgress.some((id) => id === u.id)}
                   onClick={() => {
                     props.unfollow(u.id);
-                    // props.toggleFollowingProgress(true, u.id);
-                    // usersAPI.unfollowUser(u.id).then((data) => {
-                    //   if (data.resultCode === 0) {
-                    //     props.unfollow(u.id);
-                    //   }
-                    //   props.toggleFollowingProgress(false, u.id);
-                    // });
                   }}
                 >
                   Unfollow
@@ -61,14 +54,6 @@ let Users = (props) => {
                   disabled={props.followingInProgress.some((id) => id === u.id)}
                   onClick={() => {
                     props.follow(u.id);
-                    // props.toggleFollowingProgress(true, u.id);
-                    // usersAPI.followUser(u.id).then((data) => {
-                    //   if (data.resultCode === 0) {
-                    //     //сервер подтвердил, что подписка произошла
-                    //     props.follow(u.id); //вызываем колбэк (задиспатчим в редьюсер)
-                    //   }
-                    //   props.toggleFollowingProgress(false, u.id);
-                    // });
                   }}
                 >
                   Follow

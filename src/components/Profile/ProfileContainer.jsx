@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { getUserProfileThunk } from "../../redux/profile-reducer";
 import { withRouter } from "react-router";
 import { withAuthRedirect } from "../../hoc/withAuthRedirect";
+import { compose } from "redux";
 
 class ProfileContainer extends React.Component {
   componentDidMount() {
@@ -20,24 +21,22 @@ class ProfileContainer extends React.Component {
   }
 }
 
-let AuthRedirectComponent = withAuthRedirect(ProfileContainer);
-
 let mapStateToProps = (state) => ({
   profile: state.profilePage.profile,
 });
 
-//обернем нашу контейнерную компоненту, перед тем, как отдать в connect другой компоненте,
-//withrouter возвращает новую компоненту, которая отрисует ProfileContainer,
-//но закинет в нее данные из store (из url)
-//если ввести в консоль this.props, то увидим, что появились новые значения
-//в консоли: match, location, history
-//match - совпадение нашего url с какими-то роутерами
+//зарефакторим код ниже функцией compose
 
-let WithUrlDataContainerComponent = withRouter(AuthRedirectComponent);
+// let AuthRedirectComponent = withAuthRedirect(ProfileContainer);
 
-//наша ProfileContainer вместо mapDispatchToProps создает объект,
-//в который кладет AC, далее connect сам этот АС вызовет, задиспатчит,
-//в него передаст profile и т.д.
-export default connect(mapStateToProps, { getUserProfileThunk })(
-  WithUrlDataContainerComponent
-);
+// let WithUrlDataContainerComponent = withRouter(AuthRedirectComponent);
+
+// export default connect(mapStateToProps, { getUserProfileThunk })(
+//   WithUrlDataContainerComponent
+// );
+
+export default compose(
+  connect(mapStateToProps, { getUserProfileThunk }),
+  withRouter,
+  withAuthRedirect
+)(ProfileContainer);
