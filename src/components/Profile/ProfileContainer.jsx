@@ -3,7 +3,7 @@ import Profile from "./Profile";
 import { connect } from "react-redux";
 import { getUserProfileThunk } from "../../redux/profile-reducer";
 import { withRouter } from "react-router";
-import { Redirect } from "react-router-dom";
+import { withAuthRedirect } from "../../hoc/withAuthRedirect";
 
 class ProfileContainer extends React.Component {
   componentDidMount() {
@@ -15,15 +15,15 @@ class ProfileContainer extends React.Component {
     this.props.getUserProfileThunk(userId);
   }
   render() {
-    if (!this.props.isAuth) return <Redirect to="/login" />;
     //прокинем в компоненту props, раскукожим их (...) и прокинем дальше
     return <Profile {...this.props} profile={this.props.profile} />;
   }
 }
 
+let AuthRedirectComponent = withAuthRedirect(ProfileContainer);
+
 let mapStateToProps = (state) => ({
   profile: state.profilePage.profile,
-  isAuth: state.auth.isAuth,
 });
 
 //обернем нашу контейнерную компоненту, перед тем, как отдать в connect другой компоненте,
@@ -33,7 +33,7 @@ let mapStateToProps = (state) => ({
 //в консоли: match, location, history
 //match - совпадение нашего url с какими-то роутерами
 
-let WithUrlDataContainerComponent = withRouter(ProfileContainer);
+let WithUrlDataContainerComponent = withRouter(AuthRedirectComponent);
 
 //наша ProfileContainer вместо mapDispatchToProps создает объект,
 //в который кладет AC, далее connect сам этот АС вызовет, задиспатчит,
