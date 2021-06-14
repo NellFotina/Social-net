@@ -35,7 +35,7 @@ export const setAuthUserData = (userId, email, login) => ({
 });
 
 //подготовим ThunkCreator, кот. мы можем задиспатчить извне сюда
-export const authMeThunk = () => (dispatch) => {
+export const getAuthMeThunk = () => (dispatch) => {
   authAPI.authMe().then((data) => {
     if (data.resultCode === 0) {
       let { id, login, email } = data.data;

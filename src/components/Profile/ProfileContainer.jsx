@@ -1,8 +1,9 @@
 import React from "react";
 import Profile from "./Profile";
 import { connect } from "react-redux";
-import { userProfile } from "../../redux/profile-reducer";
+import { getUserProfileThunk } from "../../redux/profile-reducer";
 import { withRouter } from "react-router";
+import { Redirect } from "react-router-dom";
 
 class ProfileContainer extends React.Component {
   componentDidMount() {
@@ -11,9 +12,10 @@ class ProfileContainer extends React.Component {
     if (!userId) {
       userId = 2; //если не выбран профиль - аватарка 2-го пользователя
     }
-    this.props.userProfile(userId);
+    this.props.getUserProfileThunk(userId);
   }
   render() {
+    if (!this.props.isAuth) return <Redirect to="/login" />;
     //прокинем в компоненту props, раскукожим их (...) и прокинем дальше
     return <Profile {...this.props} profile={this.props.profile} />;
   }
@@ -21,6 +23,7 @@ class ProfileContainer extends React.Component {
 
 let mapStateToProps = (state) => ({
   profile: state.profilePage.profile,
+  isAuth: state.auth.isAuth,
 });
 
 //обернем нашу контейнерную компоненту, перед тем, как отдать в connect другой компоненте,
@@ -35,6 +38,6 @@ let WithUrlDataContainerComponent = withRouter(ProfileContainer);
 //наша ProfileContainer вместо mapDispatchToProps создает объект,
 //в который кладет AC, далее connect сам этот АС вызовет, задиспатчит,
 //в него передаст profile и т.д.
-export default connect(mapStateToProps, { userProfile })(
+export default connect(mapStateToProps, { getUserProfileThunk })(
   WithUrlDataContainerComponent
 );

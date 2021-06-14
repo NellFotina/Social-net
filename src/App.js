@@ -11,6 +11,7 @@ import store from "./redux/redux-store";
 import UsersContainer from "./components/Users/UsersContainer";
 import ProfileContainer from "./components/Profile/ProfileContainer";
 import HeaderContainer from "./components/Header/HeaderContainer";
+import LoginPage from "./components/Login/Login"; //eсли export default, значит import под любым именем
 
 const App = () => {
   return (
@@ -29,6 +30,7 @@ const App = () => {
           path="/friends"
           render={() => <Friends state={store.getState().sidebar} />}
         />
+        <Route path="/login" render={() => <LoginPage />} />
       </div>
     </div>
   );

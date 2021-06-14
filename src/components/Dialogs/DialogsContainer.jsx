@@ -1,12 +1,16 @@
-import { sendMessageCreator, updateNewMessageBodyCreator } from "../../redux/dialogs-reducer";
+import {
+  sendMessageCreator,
+  updateNewMessageBodyCreator,
+} from "../../redux/dialogs-reducer";
 import Dialogs from "./Dialogs";
 import { connect } from "react-redux";
 
 let mapStateToProps = (state) => {
   return {
-    dialogsPage: state.dialogsPage
-  }
-}
+    dialogsPage: state.dialogsPage,
+    isAuth: state.auth.isAuth,
+  };
+};
 let mapDispatchToProps = (dispatch) => {
   return {
     updateNewMessageBody: (body) => {
@@ -14,9 +18,9 @@ let mapDispatchToProps = (dispatch) => {
     },
     sendMessage: () => {
       dispatch(sendMessageCreator());
-    }
-  }
-}
+    },
+  };
+};
 
-const DialogsContainer = connect(mapStateToProps, mapDispatchToProps) (Dialogs);
+const DialogsContainer = connect(mapStateToProps, mapDispatchToProps)(Dialogs);
 export default DialogsContainer;

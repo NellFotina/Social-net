@@ -66,7 +66,7 @@ export const setUserProfile = (profile) => {
 };
 
 //подготовим ThunkCreator, кот. мы можем задиспатчить извне сюда
-export const userProfile = (userId) => (dispatch) => {
+export const getUserProfileThunk = (userId) => (dispatch) => {
   usersAPI.getUserProfile(userId).then((data) => {
     dispatch(setUserProfile(data)); //вызовем здесь АС и передадим в него profile
   });
