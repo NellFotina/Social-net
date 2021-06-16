@@ -30,6 +30,16 @@ class ProfileStatus extends React.Component {
       status: e.currentTarget.value,
     });
   };
+  //prevProps - предыдущий пропс, prevState - предыдущий state (подсказки Реакта)
+  componentDidUpdate(prevProps, prevState) {
+    //внутри componentDidUpdate всу setState должны быть
+    //ТОЛЬКО внутри какого-то условия, чтобы не было зацикливания
+    if (prevProps.status !== this.props.status) {
+      this.setState({
+        status: this.props.status,
+      });
+    }
+  }
 
   render() {
     return (
