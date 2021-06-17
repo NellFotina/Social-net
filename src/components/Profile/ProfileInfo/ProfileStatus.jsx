@@ -32,7 +32,7 @@ class ProfileStatus extends React.Component {
   };
   //prevProps - предыдущий пропс, prevState - предыдущий state (подсказки Реакта)
   componentDidUpdate(prevProps, prevState) {
-    //внутри componentDidUpdate всу setState должны быть
+    //внутри componentDidUpdate все setState должны быть
     //ТОЛЬКО внутри какого-то условия, чтобы не было зацикливания
     if (prevProps.status !== this.props.status) {
       this.setState({
