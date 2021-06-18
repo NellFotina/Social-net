@@ -6,6 +6,8 @@
 
 import React from "react";
 import { Field, reduxForm } from "redux-form";
+import { required } from "../../utils/validators";
+import { Input } from "../common/FormsControl/FormsControl";
 
 //саму форму вынесем в отдельную компоненту
 const LoginForm = (props) => {
@@ -14,13 +16,23 @@ const LoginForm = (props) => {
     //Field - вместо input, автоматом реагируют на onChange
     <form onSubmit={props.handleSubmit}>
       <div>
-        <Field placeholder={"Login"} name={"login"} component={"input"} />
+        <Field
+          placeholder={"Login"}
+          name={"login"}
+          component={Input}
+          validate={[required]}
+        />
       </div>
       <div>
-        <Field placeholder={"Password"} name={"password"} component={"input"} />
+        <Field
+          placeholder={"Password"}
+          name={"password"}
+          component={Input}
+          validate={[required]}
+        />
       </div>
       <div>
-        <Field component={"input"} name={"rememberMe"} type={"checkbox"} />
+        <Field component={Input} name={"rememberMe"} type={"checkbox"} />
         remember me
       </div>
       <div>

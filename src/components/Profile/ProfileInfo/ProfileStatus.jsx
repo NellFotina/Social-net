@@ -1,7 +1,6 @@
 import React from "react";
 
 class ProfileStatus extends React.Component {
-  //statusInputRef = React.createRef();
   state = {
     editMode: false,
     status: this.props.status,
@@ -17,7 +16,7 @@ class ProfileStatus extends React.Component {
     this.setState({
       editMode: false,
     });
-    //this.props.updateStatus(this.statusInputRef.current.value);
+
     this.props.updateStatus(this.state.status);
   };
 
@@ -61,12 +60,10 @@ class ProfileStatus extends React.Component {
             5.Глобальный state обновится после того, как сервер подтвердит
             6.Круговоротом опять придут новые props, и значение в статусе поменяется и в span*/}
             <input
-              //ref={this.statusInputRef}
               onChange={this.onStatusChange}
               autoFocus={true}
               onFocus={this.handleFocus} //автовыделение содержимого инпута
               onBlur={this.deactivateEditMode}
-              //value={this.props.status}
               value={this.state.status}
             />
           </div>
