@@ -11,9 +11,11 @@ import { required } from "../../utils/validators";
 import { Input } from "../common/FormsControl/FormsControl";
 import { LoginThunk } from "../../redux/auth-reducer";
 import { connect } from "react-redux";
+import style from "../common/FormsControl/FormsControle.module.css";
 
 //саму форму вынесем в отдельную компоненту
 const LoginForm = (props) => {
+  debugger;
   return (
     // <form> - обязательно,
     //Field - вместо input, автоматом реагируют на onChange
@@ -40,6 +42,10 @@ const LoginForm = (props) => {
         remember me
       </div>
 
+      {props.error && (
+        //этот тег появляется только, когда есть ошибка в заполнении поля
+        <div className={style.formSummaryError}>{props.error}</div>
+      )}
       <div>
         <button>Login</button>
       </div>
@@ -55,6 +61,7 @@ const LoginForm = (props) => {
 const LoginReduxForm = reduxForm({ form: "login" })(LoginForm);
 
 const Login = (props) => {
+  debugger;
   //(formData) - СЮДА ПРИДУТ ВСЕ ЗНАЧЕНИЯ (данные из формы), можем их теперь диспатчить в санку
   const onSubmit = (formData) => {
     //чтобы проверить данные в форме, введем в консоли: store.getState().form

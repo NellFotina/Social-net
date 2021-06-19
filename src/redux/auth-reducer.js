@@ -1,4 +1,5 @@
 import { authAPI } from "../api/api";
+import { stopSubmit } from "redux-form";
 
 const SET_USER_DATA = "SET_USER_DATA";
 
@@ -49,6 +50,10 @@ export const LoginThunk = (email, password, rememberMe) => (dispatch) => {
     if (data.resultCode === 0) {
       dispatch(getAuthMeThunk());
     } else {
+      let message = data.messages.length > 0 ? data.messages[0] : "Some error";
+      dispatch(stopSubmit("login", { _error: message }));
+      //2-м параметром передаем параметр с пробоемным полем ({email: "ERROR"})
+      //_error - общая ошибка для всех полей
     }
   });
 };
