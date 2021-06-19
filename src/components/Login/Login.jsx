@@ -5,9 +5,12 @@
 //при Submite получили в нашем колбеке в Login: const onSubmit = (formData) ...)
 
 import React from "react";
+import { Redirect } from "react-router-dom";
 import { Field, reduxForm } from "redux-form";
 import { required } from "../../utils/validators";
 import { Input } from "../common/FormsControl/FormsControl";
+import { LoginThunk } from "../../redux/auth-reducer";
+import { connect } from "react-redux";
 
 //саму форму вынесем в отдельную компоненту
 const LoginForm = (props) => {
@@ -17,8 +20,8 @@ const LoginForm = (props) => {
     <form onSubmit={props.handleSubmit}>
       <div>
         <Field
-          placeholder={"Login"}
-          name={"login"}
+          placeholder={"Email"}
+          name={"email"}
           component={Input}
           validate={[required]}
         />
@@ -28,6 +31,7 @@ const LoginForm = (props) => {
           placeholder={"Password"}
           name={"password"}
           component={Input}
+          type={"password"}
           validate={[required]}
         />
       </div>
@@ -35,6 +39,7 @@ const LoginForm = (props) => {
         <Field component={Input} name={"rememberMe"} type={"checkbox"} />
         remember me
       </div>
+
       <div>
         <button>Login</button>
       </div>
@@ -53,8 +58,12 @@ const Login = (props) => {
   //(formData) - СЮДА ПРИДУТ ВСЕ ЗНАЧЕНИЯ (данные из формы), можем их теперь диспатчить в санку
   const onSubmit = (formData) => {
     //чтобы проверить данные в форме, введем в консоли: store.getState().form
-    console.log(formData);
+    //console.log(formData);
+    props.LoginThunk(formData.email, formData.password, formData.rememberMe);
   };
+  if (props.isAuth) {
+    return <Redirect to={"/profile"} />;
+  }
   return (
     <div>
       <h1>Login</h1>
@@ -63,4 +72,8 @@ const Login = (props) => {
   );
 };
 
-export default Login;
+const mapStateToProps = (state) => ({
+  isAuth: state.auth.isAuth,
+});
+
+export default connect(mapStateToProps, { LoginThunk })(Login);

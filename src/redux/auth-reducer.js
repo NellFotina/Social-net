@@ -17,8 +17,8 @@ const authReducer = (state = initialState, action) => {
       // debugger; //максимально крайняя точка для проверки
       return {
         ...state,
-        ...action.data, //в action - один объект (data), и мы его деструктуризируем (положим в него userId, email, login)
-        isAuth: true,
+        ...action.payload, //в action - один объект (data), и мы его деструктуризируем (положим в него userId, email, login)
+        // isAuth: true, // после того, как сделали Log out, эта строка не нужна
       };
 
     default:
@@ -29,17 +29,34 @@ const authReducer = (state = initialState, action) => {
 //используем АС для того, чтобы не париться (в компоненте), что мы должны сформировать, где и как
 //формируем данные в объекте
 
-export const setAuthUserData = (userId, email, login) => ({
+export const setAuthUserData = (userId, email, login, isAuth) => ({
   type: SET_USER_DATA,
-  data: { userId, email, login },
+  payload: { userId, email, login, isAuth },
 });
 
 //подготовим ThunkCreator, кот. мы можем задиспатчить извне сюда
 export const getAuthMeThunk = () => (dispatch) => {
   authAPI.authMe().then((data) => {
     if (data.resultCode === 0) {
-      let { id, login, email } = data.data;
-      dispatch(setAuthUserData(id, login, email));
+      let { id, email, login } = data.data;
+      dispatch(setAuthUserData(id, email, login, true));
+    }
+  });
+};
+
+export const LoginThunk = (email, password, rememberMe) => (dispatch) => {
+  authAPI.login(email, password, rememberMe).then((data) => {
+    if (data.resultCode === 0) {
+      dispatch(getAuthMeThunk());
+    } else {
+    }
+  });
+};
+
+export const LogoutThunk = () => (dispatch) => {
+  authAPI.logout().then((data) => {
+    if (data.resultCode === 0) {
+      dispatch(setAuthUserData(null, null, null, false));
     }
   });
 };

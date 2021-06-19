@@ -14,7 +14,7 @@ const Dialogs = (props) => {
   let MessageElements = state.messages.map((m) => (
     <Message message={m.message} key={m.id} />
   ));
-  let newMessageBody = state.newMessageBody;
+  // let newMessageBody = state.newMessageBody;
 
   let addNewMessage = (values) => {
     // в values хранится то, что мы назвали в Field (name="newMessageBody")

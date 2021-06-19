@@ -3,7 +3,7 @@
 import axios from "axios";
 
 const instance = axios.create({
-  withCredentials: true,
+  withCredentials: true, //благодаря true цепляется наша coockie
   headers: {
     "API-KEY": "73c522ff-bfdb-4f88-bb6e-58eae3d6e793",
   },
@@ -67,6 +67,18 @@ export const profileAPI = {
 export const authAPI = {
   authMe() {
     return instance.get(`auth/me`).then((response) => {
+      return response.data;
+    });
+  },
+  login(email, password, rememberMe = false) {
+    return instance
+      .post(`auth/login`, { email, password, rememberMe })
+      .then((response) => {
+        return response.data;
+      });
+  },
+  logout() {
+    return instance.delete(`auth/login`).then((response) => {
       return response.data;
     });
   },
