@@ -37,7 +37,9 @@ export const setAuthUserData = (userId, email, login, isAuth) => ({
 
 //подготовим ThunkCreator, кот. мы можем задиспатчить извне сюда
 export const getAuthMeThunk = () => (dispatch) => {
-  authAPI.authMe().then((data) => {
+  //если поставить return, то возвращается promise , который мы можем использовать в initializeAppThunk
+  //любой then возвращает промис, и еслим мы напишем "return", то этот промис вернется к нам наружу в другие ф-ции
+  return authAPI.authMe().then((data) => {
     if (data.resultCode === 0) {
       let { id, email, login } = data.data;
       dispatch(setAuthUserData(id, email, login, true));
