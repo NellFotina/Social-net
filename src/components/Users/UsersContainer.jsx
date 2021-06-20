@@ -9,6 +9,14 @@ import {
 import Users from "./Users";
 import Preloader from "../common/Preloader/Preloader";
 import { compose } from "redux";
+import {
+  getCurrentPage,
+  getFollowingInProgress,
+  getIsFetching,
+  getPageSize,
+  getTotalUsersCount,
+  getUsersSelector,
+} from "../../redux/users-selectors";
 
 class UsersComponent extends React.Component {
   componentDidMount() {
@@ -38,16 +46,28 @@ class UsersComponent extends React.Component {
   }
 }
 
+// let mapStateToProps = (state) => {
+//   return {
+//     //здесь формируется наш state после объявления этих переменных
+//     //в users-reducer, эти параметры отсюда приходят в компоненту Users в props
+//     users: state.usersPage.users, //внедряет пользователей на нашу страничку (сначала это пустой массив из users-reducer)
+//     pageSize: state.usersPage.pageSize, //количество записей на 1 странице
+//     totalUsersCount: state.usersPage.totalUsersCount, //общее количество записей
+//     currentPage: state.usersPage.currentPage, //текущая страница
+//     isFetching: state.usersPage.isFetching,
+//     followingInProgress: state.usersPage.followingInProgress,
+//   };
+// };
 let mapStateToProps = (state) => {
   return {
     //здесь формируется наш state после объявления этих переменных
     //в users-reducer, эти параметры отсюда приходят в компоненту Users в props
-    users: state.usersPage.users, //внедряет пользователей на нашу страничку (сначала это пустой массив из users-reducer)
-    pageSize: state.usersPage.pageSize, //количество записей на 1 странице
-    totalUsersCount: state.usersPage.totalUsersCount, //общее количество записей
-    currentPage: state.usersPage.currentPage, //текущая страница
-    isFetching: state.usersPage.isFetching,
-    followingInProgress: state.usersPage.followingInProgress,
+    users: getUsersSelector(state), //внедряет пользователей на нашу страничку (сначала это пустой массив из users-reducer)
+    pageSize: getPageSize(state), //количество записей на 1 странице
+    totalUsersCount: getTotalUsersCount(state), //общее количество записей
+    currentPage: getCurrentPage(state), //текущая страница
+    isFetching: getIsFetching(state),
+    followingInProgress: getFollowingInProgress(state),
   };
 };
 
