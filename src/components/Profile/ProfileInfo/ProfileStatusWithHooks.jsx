@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 //Destructuring assignment - деструктурированное присваивание
 // let a, b, rest;
@@ -18,6 +18,26 @@ const ProfileStatusWithHooks = (props) => {
 
   let [editMode, setEditMode] = useState(false);
   let [status, setStatus] = useState(props.status); //инициализованное значение берем из props, а дальше значение будет то, которое мы будем сетать
+
+  //при помощи useEffect засинхронизируем наш статус с новым введенным значением и отрисовкой
+  //(сравним с предыдущими пропсами)
+
+  //В классовой компоненте это БЫЛО РЕАЛИЗОВАНО РАНЬШЕ ТАК:
+  // componentDidUpdate(prevProps, prevState) {
+  //   //prevProps - предыдущий пропс, prevState - предыдущий state (подсказки Реакта)
+  //   //внутри componentDidUpdate все setState должны быть
+  //   //ТОЛЬКО внутри какого-то условия, чтобы не было зацикливания
+  //   if (prevProps.status !== this.props.status) {
+  //     this.setState({
+  //       status: this.props.status,
+  //     });
+  //   }
+  // }
+
+  useEffect(() => {
+    //useEffect запускается после того, как все отрисуется и покажется на экране
+    setStatus(props.status);
+  }, [props.status]); //если не указать 2-й параметр (зависимость), useEffect будет выполняться после каждой отрисовки
 
   const activatedEditMode = () => {
     setEditMode(true);
