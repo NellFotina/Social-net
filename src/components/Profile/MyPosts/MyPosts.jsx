@@ -5,7 +5,11 @@ import { Field, reduxForm } from "redux-form";
 import { required, maxLengthCreator } from "../../../utils/validators";
 import { Textarea } from "../../common/FormsControl/FormsControl";
 
-const MyPosts = (props) => {
+//React.memo внутри себя сравнивает новые пропсы и новый state с текущим состоянием
+// и только тогда отрисовыает компоненту, когда что-то изменилось
+//похож на shouldComponentUpdate в классовой компоненте
+
+const MyPosts = React.memo((props) => {
   let postsElements = props.posts.map((p) => (
     <Post message={p.message} like={p.likeCount} />
   ));
@@ -23,7 +27,7 @@ const MyPosts = (props) => {
       {postsElements}
     </div>
   );
-};
+});
 
 const maxLength10 = maxLengthCreator(10);
 
