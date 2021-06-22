@@ -10,9 +10,11 @@ import { Textarea } from "../../common/FormsControl/FormsControl";
 //похож на shouldComponentUpdate в классовой компоненте
 
 const MyPosts = React.memo((props) => {
-  let postsElements = props.posts.map((p) => (
-    <Post message={p.message} like={p.likeCount} />
-  ));
+  //применим reverse, но не к props.posts, а к [...props.posts] - к копии объекта,
+  //чтобы ф-ция оставалась имьютабельной и не меняла сам стейт на глобальном уровне
+  let postsElements = [...props.posts]
+    .reverse()
+    .map((p) => <Post message={p.message} like={p.likeCount} />);
 
   let addNewPost = (values) => {
     props.addPost(values.newPostText);
