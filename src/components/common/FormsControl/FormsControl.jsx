@@ -1,13 +1,14 @@
 import React from "react";
+import { Field } from "redux-form";
 import styles from "./FormsControle.module.css";
 
 //...props - деструктуризация - в props остается все (все остальное), кроме input, meta, child
-export const FormControl = ({ input, meta, child, ...props }) => {
-  const hasError = meta.touched && meta.error;
+export const FormControl = ({ input, meta: { touched, error }, children }) => {
+  const hasError = touched && error;
   return (
     <div className={styles.formControl + " " + (hasError ? styles.error : "")}>
-      <div>{props.children}</div>
-      {hasError && <span>{meta.error}</span>}
+      <div>{children}</div>
+      {hasError && <span>{error}</span>}
     </div>
   );
 };
@@ -59,3 +60,25 @@ export const Input = (props) => {
 //     </div>
 //   );
 // };
+
+export const createField = (
+  placeholder,
+  name,
+  validators,
+  component,
+  props = {},
+  text = ""
+) => {
+  return (
+    <div>
+      <Field
+        placeholder={placeholder}
+        name={name}
+        validate={validators}
+        component={component}
+        {...props}
+      />
+      {text}
+    </div>
+  );
+};

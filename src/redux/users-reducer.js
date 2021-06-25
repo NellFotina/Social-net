@@ -1,12 +1,13 @@
 import { usersAPI } from "../api/api";
+import { updateObjectInArray } from "../utils/object-helpers";
 
-const FOLLOW = "FOLLOW";
-const UNFOLLOW = "UNFOLLOW";
-const SET_USERS = "SET_USERS";
-const SET_CURRENT_PAGE = "SET_CURRENT_PAGE";
-const SET_TOTAL_USERS_COUNT = "SET_TOTAL_USERS_COUNT";
-const TOGGLE_IS_FETCHING = "TOGGLE_IS_FETCHING";
-const TOGGLE_IS_FOLLOWING_PROGRESS = "TOGGLE_IS_FOLLOWING_PROGRESS";
+const FOLLOW = "usersPage/FOLLOW";
+const UNFOLLOW = "usersPage/UNFOLLOW";
+const SET_USERS = "usersPage/SET_USERS";
+const SET_CURRENT_PAGE = "usersPage/SET_CURRENT_PAGE";
+const SET_TOTAL_USERS_COUNT = "usersPage/SET_TOTAL_USERS_COUNT";
+const TOGGLE_IS_FETCHING = "usersPage/TOGGLE_IS_FETCHING";
+const TOGGLE_IS_FOLLOWING_PROGRESS = "usersPage/TOGGLE_IS_FOLLOWING_PROGRESS";
 
 let initialState = {
   //сначала переменные пишем здесь, потом прокидываем их в UsersContainer через mapStateToProps
@@ -25,21 +26,27 @@ const usersReducer = (state = initialState, action) => {
     case FOLLOW:
       return {
         ...state,
-        users: state.users.map((u) => {
-          if (u.id === action.userId) {
-            return { ...u, followed: true };
-          }
-          return u;
+        // users: state.users.map((u) => {
+        //   if (u.id === action.userId) {
+        //     return { ...u, followed: true };
+        //   }
+        //   return u;
+        // }),
+        users: updateObjectInArray(state.users, action.userId, "id", {
+          followed: true,
         }),
       };
     case UNFOLLOW:
       return {
         ...state,
-        users: state.users.map((u) => {
-          if (u.id === action.userId) {
-            return { ...u, followed: false };
-          }
-          return u;
+        // users: state.users.map((u) => {
+        //   if (u.id === action.userId) {
+        //     return { ...u, followed: false };
+        //   }
+        //   return u;
+        // }),
+        users: updateObjectInArray(state.users, action.userId, "id", {
+          followed: false,
         }),
       };
     //Делаем копию state и подменяем то свойство, которое надо подменить
@@ -99,36 +106,72 @@ export const toggleFollowingProgress = (isFetching, userId) => ({
   userId,
 });
 //подготовим ThunkCreator, кот. мы можем задиспатчить извне сюда
-export const getUsers = (currentPage, pageSize) => (dispatch) => {
+export const getUsers = (currentPage, pageSize) => async (dispatch) => {
   dispatch(toggleIsFetching(true));
   dispatch(setCurrentPage(currentPage));
-  usersAPI.getUsers(currentPage, pageSize).then((data) => {
-    dispatch(toggleIsFetching(false));
-    dispatch(setUsers(data.items)); //засетаем данные в наш store (users-reducer.js)
-    dispatch(setTotalUsersCount(data.totalCount)); //засетаем общее кол-во пользователей с сервера (в девтулзе смотрим на вкладке Network по первому запросу), далее прописываем его в UsersContainer
-  });
+  let data = await usersAPI.getUsers(currentPage, pageSize);
+  dispatch(toggleIsFetching(false));
+  dispatch(setUsers(data.items)); //засетаем данные в наш store (users-reducer.js)
+  dispatch(setTotalUsersCount(data.totalCount)); //засетаем общее кол-во пользователей с сервера (в девтулзе смотрим на вкладке Network по первому запросу), далее прописываем его в UsersContainer
 };
 
 //подготовим ThunkCreator, кот. мы можем задиспатчить извне сюда
-export const follow = (userId) => (dispatch) => {
+// export const follow = (userId) => async (dispatch) => {
+
+//   dispatch(toggleFollowingProgress(true, userId));
+//   let data = await usersAPI.followUser(userId);
+//   if (data.resultCode === 0) {
+//     //сервер подтвердил, что подписка произошла
+//     dispatch(followSuccess(userId)); //вызываем колбэк (задиспатчим в редьюсер)
+//   }
+//   dispatch(toggleFollowingProgress(false, userId));
+// };
+
+// //подготовим ThunkCreator, кот. мы можем задиспатчить извне сюда
+// export const unfollow = (userId) => async (dispatch) => {
+//   dispatch(toggleFollowingProgress(true, userId));
+//   let data = await usersAPI.unfollowUser(userId);
+//   if (data.resultCode === 0) {
+//     dispatch(unfollowSuccess(userId));
+//   }
+//   dispatch(toggleFollowingProgress(false, userId));
+// };
+
+const FollowUnfollowFlow = async (
+  dispatch,
+  userId,
+  apiMethod,
+  actionCreator
+) => {
   dispatch(toggleFollowingProgress(true, userId));
-  usersAPI.followUser(userId).then((data) => {
-    if (data.resultCode === 0) {
-      //сервер подтвердил, что подписка произошла
-      dispatch(followSuccess(userId)); //вызываем колбэк (задиспатчим в редьюсер)
-    }
-    dispatch(toggleFollowingProgress(false, userId));
-  });
+  let data = await apiMethod(userId);
+  if (data.resultCode === 0) {
+    //сервер подтвердил, что подписка произошла
+    dispatch(actionCreator(userId)); //вызываем колбэк (задиспатчим в редьюсер)
+  }
+  dispatch(toggleFollowingProgress(false, userId));
 };
 
-//подготовим ThunkCreator, кот. мы можем задиспатчить извне сюда
-export const unfollow = (userId) => (dispatch) => {
-  dispatch(toggleFollowingProgress(true, userId));
-  usersAPI.unfollowUser(userId).then((data) => {
-    if (data.resultCode === 0) {
-      dispatch(unfollowSuccess(userId));
-    }
-    dispatch(toggleFollowingProgress(false, userId));
-  });
+export const follow = (userId) => {
+  return async (dispatch) => {
+    FollowUnfollowFlow(
+      dispatch,
+      userId,
+      usersAPI.followUser.bind(usersAPI),
+      followSuccess
+    );
+  };
 };
+
+export const unfollow = (userId) => {
+  return async (dispatch) => {
+    FollowUnfollowFlow(
+      dispatch,
+      userId,
+      usersAPI.unfollowUser.bind(usersAPI),
+      unfollowSuccess
+    );
+  };
+};
+
 export default usersReducer;

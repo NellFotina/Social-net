@@ -1,7 +1,7 @@
 import { authAPI } from "../api/api";
 import { stopSubmit } from "redux-form";
 
-const SET_USER_DATA = "SET_USER_DATA";
+const SET_USER_DATA = "auth/SET_USER_DATA";
 
 let initialState = {
   //сначала переменные пишем здесь, потом прокидываем их в UsersContainer через mapStateToProps
@@ -36,36 +36,42 @@ export const setAuthUserData = (userId, email, login, isAuth) => ({
 });
 
 //подготовим ThunkCreator, кот. мы можем задиспатчить извне сюда
-export const getAuthMeThunk = () => (dispatch) => {
-  //если поставить return, то возвращается promise , который мы можем использовать в initializeAppThunk
-  //любой then возвращает промис, и еслим мы напишем "return", то этот промис вернется к нам наружу в другие ф-ции
-  return authAPI.authMe().then((data) => {
-    if (data.resultCode === 0) {
-      let { id, email, login } = data.data;
-      dispatch(setAuthUserData(id, email, login, true));
-    }
-  });
+// export const getAuthMeThunk = () => (dispatch) => {
+//   //если поставить return, то возвращается promise , который мы можем использовать в initializeAppThunk
+//   //любой then возвращает промис, и еслим мы напишем "return", то этот промис вернется к нам наружу в другие ф-ции
+//   return authAPI.authMe().then((data) => {
+//     if (data.resultCode === 0) {
+//       let { id, email, login } = data.data;
+//       dispatch(setAuthUserData(id, email, login, true));
+//     }
+//   });
+// };
+
+export const getAuthMeThunk = () => async (dispatch) => {
+  let data = await authAPI.authMe(); //дожидаемся промис с помощью then, а с помощью await. И это возможно только в асинхронной ф-ции (async)
+  if (data.resultCode === 0) {
+    let { id, email, login } = data.data;
+    dispatch(setAuthUserData(id, email, login, true));
+  }
 };
 
-export const LoginThunk = (email, password, rememberMe) => (dispatch) => {
-  authAPI.login(email, password, rememberMe).then((data) => {
-    if (data.resultCode === 0) {
-      dispatch(getAuthMeThunk());
-    } else {
-      let message = data.messages.length > 0 ? data.messages[0] : "Some error";
-      dispatch(stopSubmit("login", { _error: message }));
-      //2-м параметром передаем параметр с пробоемным полем ({email: "ERROR"})
-      //_error - общая ошибка для всех полей
-    }
-  });
+export const LoginThunk = (email, password, rememberMe) => async (dispatch) => {
+  let data = await authAPI.login(email, password, rememberMe);
+  if (data.resultCode === 0) {
+    dispatch(getAuthMeThunk());
+  } else {
+    let message = data.messages.length > 0 ? data.messages[0] : "Some error";
+    dispatch(stopSubmit("login", { _error: message }));
+    //2-м параметром передаем параметр с пробоемным полем ({email: "ERROR"})
+    //_error - общая ошибка для всех полей
+  }
 };
 
-export const LogoutThunk = () => (dispatch) => {
-  authAPI.logout().then((data) => {
-    if (data.resultCode === 0) {
-      dispatch(setAuthUserData(null, null, null, false));
-    }
-  });
+export const LogoutThunk = () => async (dispatch) => {
+  let data = await authAPI.logout();
+  if (data.resultCode === 0) {
+    dispatch(setAuthUserData(null, null, null, false));
+  }
 };
 
 export default authReducer;

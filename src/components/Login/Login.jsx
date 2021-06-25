@@ -6,21 +6,26 @@
 
 import React from "react";
 import { Redirect } from "react-router-dom";
-import { Field, reduxForm } from "redux-form";
+import { reduxForm } from "redux-form";
 import { required } from "../../utils/validators";
-import { Input } from "../common/FormsControl/FormsControl";
+import { createField, Input } from "../common/FormsControl/FormsControl";
 import { LoginThunk } from "../../redux/auth-reducer";
 import { connect } from "react-redux";
 import style from "../common/FormsControl/FormsControle.module.css";
 
 //саму форму вынесем в отдельную компоненту
-const LoginForm = (props) => {
-  debugger;
+
+//деструктуризация параметров в скобках:
+// const LoginForm = (props) => {
+const LoginForm = ({ handleSubmit, error }) => {
   return (
     // <form> - обязательно,
     //Field - вместо input, автоматом реагируют на onChange
-    <form onSubmit={props.handleSubmit}>
-      <div>
+
+    //деструктуризация
+    // <form onSubmit={props.handleSubmit}>
+    <form onSubmit={handleSubmit}>
+      {/* <div>
         <Field
           placeholder={"Email"}
           name={"email"}
@@ -40,12 +45,27 @@ const LoginForm = (props) => {
       <div>
         <Field component={Input} name={"rememberMe"} type={"checkbox"} />
         remember me
-      </div>
+      </div> */}
 
+      {createField("Email", "email", [required], Input)}
+      {createField("Password", "password", [required], Input, {
+        type: "password",
+      })}
+      {createField(
+        null,
+        "rememberMe",
+        [],
+        Input,
+        { type: "checkbox" },
+        "remember me"
+      )}
+
+      {/* деструктуризация 
       {props.error && (
         //этот тег появляется только, когда есть ошибка в заполнении поля
         <div className={style.formSummaryError}>{props.error}</div>
-      )}
+      )} */}
+      {error && <div className={style.formSummaryError}>{error}</div>}
       <div>
         <button>Login</button>
       </div>

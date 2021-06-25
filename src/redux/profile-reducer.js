@@ -1,9 +1,9 @@
 import { profileAPI } from "../api/api";
 
-const ADD_POST = "ADD-POST";
-const DELETE_POST = "DELETE_POST";
-const SET_USER_PROFILE = "SET_USER_PROFILE";
-const SET_STATUS = "SET_STATUS";
+const ADD_POST = "profilePage/ADD-POST";
+const DELETE_POST = "profilePage/DELETE_POST";
+const SET_USER_PROFILE = "profilePage/SET_USER_PROFILE";
+const SET_STATUS = "profilePage/SET_STATUS";
 
 let initialState = {
   posts: [
@@ -33,7 +33,7 @@ const profileReducer = (state = initialState, action) => {
     case DELETE_POST: {
       return {
         ...state,
-        posts: [...state.posts.filter((p) => p.id != action.postId)],
+        posts: [...state.posts.filter((p) => p.id !== action.postId)],
       };
     }
 
@@ -72,27 +72,24 @@ export const setStatus = (status) => {
 };
 
 //подготовим ThunkCreator, кот. мы можем задиспатчить извне сюда
-export const getUserProfileThunk = (userId) => (dispatch) => {
-  profileAPI.getUserProfile(userId).then((data) => {
-    dispatch(setUserProfile(data)); //вызовем здесь АС и передадим в него profile
-  });
+export const getUserProfileThunk = (userId) => async (dispatch) => {
+  let data = await profileAPI.getUserProfile(userId);
+  dispatch(setUserProfile(data)); //вызовем здесь АС и передадим в него profile
 };
 
-export const getStatusThunk = (userId) => (dispatch) => {
-  profileAPI.getStatus(userId).then((data) => {
-    dispatch(setStatus(data)); //вызовем здесь АС и передадим в него status
-  });
+export const getStatusThunk = (userId) => async (dispatch) => {
+  let data = await profileAPI.getStatus(userId);
+  dispatch(setStatus(data)); //вызовем здесь АС и передадим в него status
 };
 
-export const updateStatusThunk = (status) => (dispatch) => {
+export const updateStatusThunk = (status) => async (dispatch) => {
   //чувак напечатал статус и нам его прислали,
   //теперь нам хотелось бы его на сервер отправить
-  profileAPI.updateStatus(status).then((data) => {
-    //если статус передался на сервер без ошибки - засетаем его к себе
-    if (data.resultCode === 0) {
-      dispatch(setStatus(status)); //вызовем здесь АС и передадим в него status
-    }
-  });
+  let data = await profileAPI.updateStatus(status);
+  //если статус передался на сервер без ошибки - засетаем его к себе
+  if (data.resultCode === 0) {
+    dispatch(setStatus(status)); //вызовем здесь АС и передадим в него status
+  }
 };
 
 export default profileReducer;

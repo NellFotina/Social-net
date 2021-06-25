@@ -20,7 +20,8 @@ import {
 
 class UsersComponent extends React.Component {
   componentDidMount() {
-    this.props.getUsers(this.props.currentPage, this.props.pageSize);
+    const { currentPage, pageSize } = this.props;
+    this.props.getUsers(currentPage, pageSize);
   }
   //все колбеки приходят сюда из mapDispatchToProps
   onPageChanged = (pageNumber) => {
@@ -59,6 +60,7 @@ class UsersComponent extends React.Component {
 //   };
 // };
 let mapStateToProps = (state) => {
+  debugger;
   return {
     //здесь формируется наш state после объявления этих переменных
     //в users-reducer, эти параметры отсюда приходят в компоненту Users в props
