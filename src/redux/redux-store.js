@@ -1,4 +1,4 @@
-import { applyMiddleware, combineReducers, createStore } from "redux";
+import { combineReducers, createStore, applyMiddleware, compose } from "redux";
 import authReducer from "./auth-reducer";
 import dialogsReducer from "./dialogs-reducer";
 import profileReducer from "./profile-reducer";
@@ -18,8 +18,15 @@ let reducers = combineReducers({
   app: appReducer,
 });
 
-let store = createStore(reducers, applyMiddleware(thunkMiddleWare));
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const store = createStore(
+  reducers,
+  /* preloadedState, */ composeEnhancers(applyMiddleware(thunkMiddleWare))
+);
 
-window.store = store; //чтоб просматривать store в консоли
+// let store = createStore(reducers, applyMiddleware(thunkMiddleWare));
+
+// window.store = store; //чтоб просматривать store в консоли
+window.__store__ = store; //чтоб не затереть что-то в глобальном store
 
 export default store;
