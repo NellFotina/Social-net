@@ -3,17 +3,13 @@ import "./App.css";
 import store from "./redux/redux-store";
 import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
-
+import UsersContainer from "./components/Users/UsersContainer";
 import Navbar from "./components/Navbar/Navbar";
 import News from "./components/News/News";
 import Music from "./components/Music/Music";
 import Settings from "./components/Settings/Settings";
 import Friends from "./components/Friends/Friends";
 import { Route } from "react-router";
-import DialogsContainer from "./components/Dialogs/DialogsContainer";
-
-import UsersContainer from "./components/Users/UsersContainer";
-import ProfileContainer from "./components/Profile/ProfileContainer";
 import HeaderContainer from "./components/Header/HeaderContainer";
 import LoginPage from "./components/Login/Login"; //eсли export default, значит import под любым именем
 import { initializeAppThunk } from "./redux/app-reducer";
@@ -22,6 +18,16 @@ import { withRouter } from "react-router-dom";
 import { compose } from "redux";
 import Preloader from "./components/common/Preloader/Preloader";
 import { Component } from "react";
+import { withSuspense } from "./hoc/withSuspense";
+
+//import DialogsContainer from "./components/Dialogs/DialogsContainer";
+const DialogsContainer = React.lazy(() =>
+  import("./components/Dialogs/DialogsContainer")
+);
+//import ProfileContainer from "./components/Profile/ProfileContainer";
+const ProfileContainer = React.lazy(() =>
+  import("./components/Profile/ProfileContainer")
+);
 
 class App extends Component {
   componentDidMount() {
@@ -41,8 +47,32 @@ class App extends Component {
         <HeaderContainer />
         <Navbar state={store.getState().sidebar} />
         <div className="app-wrapper-main">
-          <Route path="/profile/:userId?" render={() => <ProfileContainer />} />
-          <Route path="/dialogs" render={() => <DialogsContainer />} />
+          {/* <Route path="/profile/:userId?" render={() => <ProfileContainer />} /> */}
+
+          {/* Вместо обычной отрисовки <DialogsContainer />, сделаем отрисовку с задержкой */}
+          {/* Чтобы сократить повторяющийся код, сделаем НОС withSuspense */}
+          <Route
+            path="/profile/:userId?"
+            render={withSuspense(ProfileContainer)}
+          />
+
+          {/* <Route path="/dialogs" render={() => <DialogsContainer />} /> */}
+
+          {/* Вместо обычной отрисовки <DialogsContainer />, сделаем отрисовку с задержкой */}
+
+          {/* <Route
+            path="/dialogs"            
+            render={() => {
+              return (
+                <Suspense fallback={<div>Loading...</div>}>
+                  <DialogsContainer />
+                </Suspense>
+              );
+            }}
+          /> */}
+
+          {/* Чтобы сократить повторяющийся код, сделаем НОС withSuspense */}
+          <Route path="/dialogs" render={withSuspense(DialogsContainer)} />
           <Route path="/users" render={() => <UsersContainer />} />
           <Route path="/news" render={() => <News />} />
           <Route path="/music" render={() => <Music />} />
