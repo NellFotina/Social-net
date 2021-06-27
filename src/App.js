@@ -1,5 +1,9 @@
 import React from "react";
 import "./App.css";
+import store from "./redux/redux-store";
+import { BrowserRouter } from "react-router-dom";
+import { Provider } from "react-redux";
+
 import Navbar from "./components/Navbar/Navbar";
 import News from "./components/News/News";
 import Music from "./components/Music/Music";
@@ -7,7 +11,7 @@ import Settings from "./components/Settings/Settings";
 import Friends from "./components/Friends/Friends";
 import { Route } from "react-router";
 import DialogsContainer from "./components/Dialogs/DialogsContainer";
-import store from "./redux/redux-store";
+
 import UsersContainer from "./components/Users/UsersContainer";
 import ProfileContainer from "./components/Profile/ProfileContainer";
 import HeaderContainer from "./components/Header/HeaderContainer";
@@ -60,7 +64,19 @@ const mapStateToProps = (state) => ({
   initialized: state.app.initialized,
 });
 
-export default compose(
+let AppContainer = compose(
   withRouter, //раньше сбивалась работа <Route />, когда connect компоненту, поэтому здесь withRouter - вроде этот баг уже пофиксили, но все равно оставим
   connect(mapStateToProps, { initializeAppThunk })
 )(App);
+
+const SamuraiJSApp = (props) => {
+  return (
+    <BrowserRouter>
+      <Provider store={store}>
+        <AppContainer />
+      </Provider>
+    </BrowserRouter>
+  );
+};
+
+export default SamuraiJSApp;

@@ -10,12 +10,13 @@ let Users = ({
   users,
   ...props
 }) => {
+  debugger;
   return (
     <div>
       <Paginator
         currentPage={currentPage}
         onPageChanged={onPageChanged}
-        totalUsersCount={totalUsersCount}
+        totalItemsCount={totalUsersCount}
         pageSize={pageSize}
       />
       <div>
