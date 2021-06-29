@@ -1,7 +1,7 @@
 import React from "react";
 import "./App.css";
 import store from "./redux/redux-store";
-import { BrowserRouter } from "react-router-dom";
+import { HashRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import UsersContainer from "./components/Users/UsersContainer";
 import Navbar from "./components/Navbar/Navbar";
@@ -101,11 +101,13 @@ let AppContainer = compose(
 
 const SamuraiJSApp = (props) => {
   return (
-    <BrowserRouter>
+    // process(глобальный объект в node.js).env(окружение).PUBLIC_URL(для локалки будет пусто) - настройка окружения,
+    //для того, чтобы работал deploy не только с локалки, но и с хостинга
+    <HashRouter basename={process.env.PUBLIC_URL}>
       <Provider store={store}>
         <AppContainer />
       </Provider>
-    </BrowserRouter>
+    </HashRouter>
   );
 };
 
