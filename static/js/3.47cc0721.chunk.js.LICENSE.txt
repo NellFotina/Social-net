@@ -1,0 +1,1 @@
+//!props.profile - это все равно, что props.profile == null || props.profile (тип его) underfined
