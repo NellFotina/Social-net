@@ -1,7 +1,11 @@
 .descriptionBlock {
-    padding: 20px;
+  padding: 20px;
 }
 
 .img img {
-    width: 100%;
+  width: 100%;
+}
+
+.mainPhoto {
+  max-width: 200px;
 }

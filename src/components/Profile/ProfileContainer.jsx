@@ -5,12 +5,13 @@ import {
   getUserProfileThunk,
   getStatusThunk,
   updateStatusThunk,
+  savePhotoThunk,
 } from "../../redux/profile-reducer";
 import { withRouter } from "react-router";
 import { compose } from "redux";
 
 class ProfileContainer extends React.Component {
-  componentDidMount() {
+  refreshProfile() {
     //match.params. - урок 60
     //match.params. - значения из консоли, связанные с ф-цией withRouter - вытаскивает данные из url
     let userId = this.props.match.params.userId;
@@ -27,14 +28,26 @@ class ProfileContainer extends React.Component {
     this.props.getUserProfileThunk(userId);
     this.props.getStatusThunk(userId);
   }
+  componentDidMount() {
+    this.refreshProfile();
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    //чтобы не было зацикленности на изменения любого props,
+    //вставим проверку на изменение определенного параметра - именно userId
+    if (this.props.match.params.userId !== prevProps.match.params.userId)
+      this.refreshProfile();
+  }
   render() {
     //прокинем в компоненту props, раскукожим их (...) и прокинем дальше
     return (
       <Profile
         {...this.props}
+        isOwner={!this.props.match.params.userId} //isOwner=false - я владелец профиля
         profile={this.props.profile}
         status={this.props.status}
         updateStatus={this.props.updateStatusThunk}
+        savePhoto={this.props.savePhotoThunk}
       />
     );
   }
@@ -53,6 +66,7 @@ export default compose(
     getUserProfileThunk,
     getStatusThunk,
     updateStatusThunk,
+    savePhotoThunk,
   }),
   withRouter
 )(ProfileContainer);

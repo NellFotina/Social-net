@@ -1,9 +1,10 @@
 import { profileAPI } from "../api/api";
-
+//action:
 const ADD_POST = "profilePage/ADD-POST";
 const DELETE_POST = "profilePage/DELETE_POST";
 const SET_USER_PROFILE = "profilePage/SET_USER_PROFILE";
 const SET_STATUS = "profilePage/SET_STATUS";
+const SAVE_PHOTO_SUCCEES = "profilePage/SAVE_PHOTO_SUCCEES";
 
 let initialState = {
   posts: [
@@ -44,6 +45,10 @@ const profileReducer = (state = initialState, action) => {
     case SET_STATUS: {
       return { ...state, status: action.status };
     }
+    case SAVE_PHOTO_SUCCEES: {
+      //обновим фотку на ту, что пришла в action
+      return { ...state, profile: { ...state.profile, photos: action.photos } };
+    }
     default:
       return state;
   }
@@ -71,6 +76,10 @@ export const setStatus = (status) => {
   return { type: SET_STATUS, status };
 };
 
+export const savePhotoSuccess = (photos) => {
+  return { type: SAVE_PHOTO_SUCCEES, photos }; //AC вернет новую фотку и сработает редьюсер
+};
+
 //подготовим ThunkCreator, кот. мы можем задиспатчить извне сюда
 export const getUserProfileThunk = (userId) => async (dispatch) => {
   let data = await profileAPI.getUserProfile(userId);
@@ -89,6 +98,15 @@ export const updateStatusThunk = (status) => async (dispatch) => {
   //если статус передался на сервер без ошибки - засетаем его к себе
   if (data.resultCode === 0) {
     dispatch(setStatus(status)); //вызовем здесь АС и передадим в него status
+  }
+};
+
+export const savePhotoThunk = (file) => async (dispatch) => {
+  //сюда будем отправлять выбранный файл
+  let data = await profileAPI.savePhoto(file); //попросим сервер сохранить фото
+
+  if (data.resultCode === 0) {
+    dispatch(savePhotoSuccess(data.data.photos)); //обновим нашу фотку
   }
 };
 

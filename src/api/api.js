@@ -11,24 +11,22 @@ const instance = axios.create({
 });
 
 export const usersAPI = {
-  getUsers(currentPage = 1, pageSize = 10) {
-    return instance
-      .get(`users?page=${currentPage}&count${pageSize}`)
-      .then((response) => {
-        return response.data;
-      });
+  async getUsers(currentPage = 1, pageSize = 10) {
+    let response = await instance.get(
+      `users?page=${currentPage}&count${pageSize}`
+    );
+
+    return response.data;
   },
 
-  followUser(id) {
+  async followUser(id) {
     //2-м параметром в Post передается пустой массив
-    return instance.post(`follow/${id}`, []).then((response) => {
-      return response.data;
-    });
+    let response = await instance.post(`follow/${id}`, []);
+    return response.data;
   },
-  unfollowUser(id) {
-    return instance.delete(`follow/${id}`).then((response) => {
-      return response.data;
-    });
+  async unfollowUser(id) {
+    let response = await instance.delete(`follow/${id}`);
+    return response.data;
   },
   //мы перенесли этот метод в profileAPI, и теперь,
   //чтобы не переписывать код везде, где применялся этот метод,
@@ -41,45 +39,56 @@ export const usersAPI = {
 };
 
 export const profileAPI = {
-  getUserProfile(id) {
-    return instance.get(`profile/` + id).then((response) => {
-      return response.data;
-    });
+  async getUserProfile(id) {
+    let response = await instance.get(`profile/` + id);
+    return response.data;
   },
-  getStatus(id) {
-    return instance.get(`profile/status/` + id).then((response) => {
-      return response.data;
-    });
+  async getStatus(id) {
+    let response = await instance.get(`profile/status/` + id);
+    return response.data;
   },
   //вторым параметром передаем json-объект, который требует сервер
   //это нужно смотреть в api, в документации в request (в Properties)
-  updateStatus(status) {
+  async updateStatus(status) {
     //отправляем на сервер json-объект, у которого есть свойство status,
     //то, что требует документация
-    return instance
-      .put(`profile/status`, { status: status })
-      .then((response) => {
-        return response.data;
-      });
+    let response = await instance.put(`profile/status`, { status: status });
+
+    return response.data;
+  },
+  async savePhoto(photoFile) {
+    const formData = new FormData();
+    formData.append("image", photoFile); //смотрим на сервере тип запроса - "image", добавим файл из input - photoFile
+
+    let response = await instance.put(`profile/photo`, formData, {
+      //мы отправляем не json, как в статусе, а formData, укажем это в 3-м параметре
+      //объект c заголовком header: Content-Type: form/multipart можно не отправлять в API.
+      //Конструктор FormData() формирует его сам автоматически
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    return response.data;
   },
 };
 
 export const authAPI = {
-  authMe() {
-    return instance.get(`auth/me`).then((response) => {
-      return response.data;
-    });
+  async authMe() {
+    let response = await instance.get(`auth/me`);
+    return response.data;
   },
-  login(email, password, rememberMe = false) {
-    return instance
-      .post(`auth/login`, { email, password, rememberMe })
-      .then((response) => {
-        return response.data;
-      });
-  },
-  logout() {
-    return instance.delete(`auth/login`).then((response) => {
-      return response.data;
+  async login(email, password, rememberMe = false) {
+    let response = await instance.post(`auth/login`, {
+      email,
+      password,
+      rememberMe,
     });
+
+    return response.data;
+  },
+  async logout() {
+    let response = await instance.delete(`auth/login`);
+    return response.data;
   },
 };
