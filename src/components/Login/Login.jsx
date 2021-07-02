@@ -17,7 +17,7 @@ import style from "../common/FormsControl/FormsControle.module.css";
 
 //деструктуризация параметров в скобках:
 // const LoginForm = (props) => {
-const LoginForm = ({ handleSubmit, error }) => {
+const LoginForm = ({ handleSubmit, error, captchaUrl }) => {
   return (
     // <form> - обязательно,
     //Field - вместо input, автоматом реагируют на onChange
@@ -37,6 +37,10 @@ const LoginForm = ({ handleSubmit, error }) => {
         { type: "checkbox" },
         "remember me"
       )}
+
+      {captchaUrl && <img src={captchaUrl} />}
+      {captchaUrl &&
+        createField("Symbol from image", "captch", [required], Input)}
 
       {/* деструктуризация 
       {props.error && (
@@ -63,7 +67,12 @@ const Login = (props) => {
   const onSubmit = (formData) => {
     //чтобы проверить данные в форме, введем в консоли: store.getState().form
     //console.log(formData);
-    props.LoginThunk(formData.email, formData.password, formData.rememberMe);
+    props.LoginThunk(
+      formData.email,
+      formData.password,
+      formData.rememberMe,
+      formData.captchaUrl
+    );
   };
   if (props.isAuth) {
     return <Redirect to={"/profile"} />;
@@ -71,13 +80,14 @@ const Login = (props) => {
   return (
     <div>
       <h1>Login</h1>
-      <LoginReduxForm onSubmit={onSubmit} />
+      <LoginReduxForm onSubmit={onSubmit} captchaUrl={props.captchaUrl} />
     </div>
   );
 };
 
 const mapStateToProps = (state) => ({
   isAuth: state.auth.isAuth,
+  captchaUrl: state.auth.captchaUrl,
 });
 
 export default connect(mapStateToProps, { LoginThunk })(Login);
