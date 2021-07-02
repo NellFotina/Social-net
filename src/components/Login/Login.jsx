@@ -25,28 +25,6 @@ const LoginForm = ({ handleSubmit, error }) => {
     //деструктуризация
     // <form onSubmit={props.handleSubmit}>
     <form onSubmit={handleSubmit}>
-      {/* <div>
-        <Field
-          placeholder={"Email"}
-          name={"email"}
-          component={Input}
-          validate={[required]}
-        />
-      </div>
-      <div>
-        <Field
-          placeholder={"Password"}
-          name={"password"}
-          component={Input}
-          type={"password"}
-          validate={[required]}
-        />
-      </div>
-      <div>
-        <Field component={Input} name={"rememberMe"} type={"checkbox"} />
-        remember me
-      </div> */}
-
       {createField("Email", "email", [required], Input)}
       {createField("Password", "password", [required], Input, {
         type: "password",
@@ -81,7 +59,6 @@ const LoginForm = ({ handleSubmit, error }) => {
 const LoginReduxForm = reduxForm({ form: "login" })(LoginForm);
 
 const Login = (props) => {
-  debugger;
   //(formData) - СЮДА ПРИДУТ ВСЕ ЗНАЧЕНИЯ (данные из формы), можем их теперь диспатчить в санку
   const onSubmit = (formData) => {
     //чтобы проверить данные в форме, введем в консоли: store.getState().form

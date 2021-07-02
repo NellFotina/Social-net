@@ -1,3 +1,4 @@
+import { stopSubmit } from "redux-form";
 import { profileAPI } from "../api/api";
 //action:
 const ADD_POST = "profilePage/ADD-POST";
@@ -107,6 +108,25 @@ export const savePhotoThunk = (file) => async (dispatch) => {
 
   if (data.resultCode === 0) {
     dispatch(savePhotoSuccess(data.data.photos)); //обновим нашу фотку
+  }
+};
+
+//сюда приходит (profile), который мы отправим на сервер
+export const saveProfileThunk = (profile) => async (dispatch, getState) => {
+  const userId = getState().auth.userId;
+  const data = await profileAPI.saveProfile(profile); //попросим сервер сохранить данные, передаем ему profile
+
+  if (data.resultCode === 0) {
+    dispatch(getUserProfileThunk(userId)); //обновим наш профиль
+  } else {
+    dispatch(
+      // stopSubmit("edit-profile", { contacts: { facebook: data.messages[0] } })
+      stopSubmit("edit-profile", { _error: data.messages[0] })
+    );
+    //1-й параметр - значение из ProfileDataReduxForm; 2-м параметром передаем параметр с проблемным полем ({email: "ERROR"})
+    //_error - общая ошибка для всех полей
+    return Promise.reject(data.messages[0]); //возвращает промис, который отклоняется ошибкой,
+    //закинем и саму ошибку в промис, если вдруг она нам понадобится для каких-либо отображений
   }
 };
 

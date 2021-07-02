@@ -14,7 +14,7 @@ const MyPosts = React.memo((props) => {
   //чтобы ф-ция оставалась имьютабельной и не меняла сам стейт на глобальном уровне
   let postsElements = [...props.posts]
     .reverse()
-    .map((p) => <Post message={p.message} like={p.likeCount} />);
+    .map((p) => <Post key={p.id} message={p.message} like={p.likeCount} />);
 
   let addNewPost = (values) => {
     props.addPost(values.newPostText);

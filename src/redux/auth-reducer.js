@@ -62,7 +62,7 @@ export const LoginThunk = (email, password, rememberMe) => async (dispatch) => {
   } else {
     let message = data.messages.length > 0 ? data.messages[0] : "Some error";
     dispatch(stopSubmit("login", { _error: message }));
-    //2-м параметром передаем параметр с пробоемным полем ({email: "ERROR"})
+    //2-м параметром передаем параметр с проблемным полем ({email: "ERROR"})
     //_error - общая ошибка для всех полей
   }
 };
