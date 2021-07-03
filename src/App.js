@@ -1,7 +1,7 @@
 import React from "react";
 import "./App.css";
 import store from "./redux/redux-store";
-import { HashRouter } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import UsersContainer from "./components/Users/UsersContainer";
 import Navbar from "./components/Navbar/Navbar";
@@ -30,10 +30,25 @@ const ProfileContainer = React.lazy(() =>
 );
 
 class App extends Component {
+  catchAllUnhandleErrors = (reason, promise) => {
+    alert("Some error occured");
+  };
   componentDidMount() {
     //initializeAppThunk сначала проверяет авторизацию, потом ставит флаг инициализации
     this.props.initializeAppThunk();
+    //подписка на window. - side-effect, нереактовское поведение, подписка на глобальное событие
+    //отлаваливаем ошибки валидации - подписываемся на событие unhandledrejection;
+    //2-й вариант - можно сделать локальный обработчик событий в санке (try - catch)
+    window.addEventListener("unhandledrejection", this.catchAllUnhandleErrors);
   }
+  //если мы подписались на глобальное событие, мы обязательно должны отписаться, когда компонента умрет
+  componentDidMount() {
+    window.removeEventListener(
+      "unhandledrejection",
+      this.catchAllUnhandleErrors
+    );
+  }
+
   render() {
     //если мы непроинициализированы - показываем крутилку
     //(иначе асинхронные запросы будут выполняться с разной задержкой
@@ -103,11 +118,11 @@ const SamuraiJSApp = (props) => {
   return (
     // process(глобальный объект в node.js).env(окружение).PUBLIC_URL(для локалки будет пусто) - настройка окружения,
     //для того, чтобы работал deploy не только с локалки, но и с хостинга
-    <HashRouter basename={process.env.PUBLIC_URL}>
+    <BrowserRouter basename={process.env.PUBLIC_URL}>
       <Provider store={store}>
         <AppContainer />
       </Provider>
-    </HashRouter>
+    </BrowserRouter>
   );
 };
 

@@ -5,6 +5,9 @@ const INITIALIZED_SUCCESS = "app/INITIALIZED_SUCCESS"; //action
 let initialState = {
   //сначала переменные пишем здесь, потом прокидываем их в App через mapStateToProps
   initialized: false, //непроинициализирован
+  //globalError: null, //для App - реакция на ошибки валидации -
+  //если делать локальный обработчик событий try - catch
+  // (например, очень длинный статус)
 };
 
 const appReducer = (state = initialState, action) => {

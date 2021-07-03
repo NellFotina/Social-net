@@ -13,12 +13,12 @@ import { compose } from "redux";
 
 class ProfileContainer extends React.Component {
   refreshProfile() {
-    //match.params. - урок 60
+    //match.params. - урок 60 - взялась тут, благодаря withRouter, кот. коннектит нас к url
     //match.params. - значения из консоли, связанные с ф-цией withRouter - вытаскивает данные из url
     let userId = this.props.match.params.userId;
     if (!userId) {
       //если не выбран профиль кого-то и мы авторизованы, то - наша аватарка (наш Profile, наш ID)
-      userId = this.props.meAuthUserId;
+      userId = this.props.meAuthUserId; //meAuthUserId - взялось тут, благодаря connect, кот. коннектит нас к стору
       //есть такой программный метод редиректа для ознакомления применим его тут (вместо <Redirect />):
       //если мы не авторизованы, то скачем (редирект) на страницу Логин
       if (!userId) {
