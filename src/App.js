@@ -42,7 +42,7 @@ class App extends Component {
     window.addEventListener("unhandledrejection", this.catchAllUnhandleErrors);
   }
   //если мы подписались на глобальное событие, мы обязательно должны отписаться, когда компонента умрет
-  componentDidMount() {
+  componentDidUnmount() {
     window.removeEventListener(
       "unhandledrejection",
       this.catchAllUnhandleErrors

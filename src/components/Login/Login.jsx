@@ -38,7 +38,7 @@ const LoginForm = ({ handleSubmit, error, captchaUrl }) => {
         "remember me"
       )}
 
-      {captchaUrl && <img src={captchaUrl} />}
+      {captchaUrl && <img src={captchaUrl} alt="" />}
       {captchaUrl &&
         createField("Symbol from image", "captch", [required], Input)}
 
